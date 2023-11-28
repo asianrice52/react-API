@@ -5,6 +5,8 @@ import PersonDetails from "../person-details";
 import ErrorIndicator from "../error-indicator";
 import SwapiService from "../../services/swapi-service";
 import Row from "../row";
+import ErrorButton from "../error-button";
+import ErrorBoundry from "../error-boundry";
 
 export default class PeoplePage extends Component {
     swapiService = new SwapiService();
@@ -30,10 +32,15 @@ export default class PeoplePage extends Component {
         const itemList = (<ItemList
             onItemSelected={this.onPersonSelected}
             getData={this.swapiService.getAllPeople}
-            renderItem={  ({ name, gender, birthYear }) => `${name} (${gender}, ${birthYear})`}
-        />);
+            >
+                { (i) => `${i.name} (${i.birthYear})}` }
+            </ItemList>);
 
-        const personDetails = <PersonDetails personId={this.state.selectedPerson} />
+        const personDetails = (
+            <ErrorBoundry>
+            <PersonDetails personId={this.state.selectedPerson} />
+            </ErrorBoundry>
+        );
 
         return (
             <Row left={itemList} right={personDetails} />
